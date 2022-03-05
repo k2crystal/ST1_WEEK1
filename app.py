@@ -39,6 +39,7 @@ def make_keras_picklable():
 
     cls = Model
     cls.__reduce__ = __reduce__
+make_keras_picklable()
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -54,7 +55,7 @@ def index():
         pred2 = model2.predict([[Nikkei]])
         str2 = "The prediction for STI using Decision Tree is: "+ str(pred2)
         
-        make_keras_picklable()
+        
         with open('STI_NN', 'rb') as f:
             model3 = pickle.load(f)
         #model3 = joblib.load("STI_NN")
