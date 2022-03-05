@@ -11,6 +11,7 @@ app = Flask(__name__)
 
 from flask import request, render_template
 import joblib
+import pickle
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -25,8 +26,9 @@ def index():
         model2 = joblib.load("STI_DT")
         pred2 = model2.predict([[Nikkei]])
         str2 = "The prediction for STI using Decision Tree is: "+ str(pred2)
-
-        model3 = joblib.load("STI_NN")
+        with open('STI_NN', 'rb') as f:
+            model3 = pickle.load(f)
+        #model3 = joblib.load("STI_NN")
         pred3 = model3.predict([[Nikkei]])
         str3 = "The prediction for STI using Neural Network is: "+ str(pred3)
 
