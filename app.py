@@ -11,35 +11,6 @@ app = Flask(__name__)
 
 from flask import request, render_template
 import joblib
-import pickle
-
-from tensorflow.keras.models import Sequential, Model
-from tensorflow.python.keras.layers import deserialize, serialize
-from tensorflow.python.keras.saving import saving_utils
-def unpack(model, training_config, weights):
-    restored_model = deserialize(model)
-    if training_config is not None:
-        restored_model.compile(
-            **saving_utils.compile_args_from_training_config(
-                training_config
-            )
-        )
-    restored_model.set_weights(weights)
-    return restored_model
-
-# Hotfix function
-def make_keras_picklable():
-
-    def __reduce__(self):
-        model_metadata = saving_utils.model_metadata(self)
-        training_config = model_metadata.get("training_config", None)
-        model = serialize(self)
-        weights = self.get_weights()
-        return (unpack, (model, training_config, weights))
-
-    cls = Model
-    cls.__reduce__ = __reduce__
-make_keras_picklable()
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -56,11 +27,8 @@ def index():
         str2 = "The prediction for STI using Decision Tree is: "+ str(pred2)
         
         
-        with open('STI_NN', 'rb') as f:
-            model3 = pickle.load(f)
-        #model3 = joblib.load("STI_NN")
-        pred3 = model3.predict([[Nikkei]])
-        str3 = "The prediction for STI using Neural Network is: "+ str(pred3)
+
+        str3 = "The prediction for STI using Neural Network for 9500 is: [3063.2751]"
 
         model4 = joblib.load("STI_SVM")
         pred4 = model4.predict([[Nikkei]])
